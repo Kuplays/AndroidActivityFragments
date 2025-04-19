@@ -1,0 +1,16 @@
+[
+  {
+    "title": "Ghost of Tsushima",
+    "posterUrl": "game1",
+    "description": "Ghost of Tsushima is a 2020 action-adventure game developed by Sucker Punch Productions and published by Sony Interactive Entertainment. The player controls Jin Sakai, a samurai on a quest to protect Tsushima Island during the first Mongol invasion of Japan.",
+    "releaseYear": 2020,
+    "rating": 83
+  },
+  {
+    "title": "Death Stranding",
+    "posterUrl": "game2",
+    "description": "The game is set in the United States following a cataclysmic event which caused destructive creatures to begin roaming the Earth. The player controls Sam Porter Bridges (Norman Reedus), a courier tasked with delivering supplies to isolated colonies and reconnecting them via a wireless communications network.",
+    "releaseYear": 2019,
+    "rating": 82
+  }
+]
