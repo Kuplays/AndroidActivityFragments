@@ -1,47 +1,56 @@
 package com.example.androidactivityfragments
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.example.androidactivityfragments.ui.theme.AndroidActivityFragmentsTheme
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.androidactivityfragments.adapters.GameAdapter
+import com.example.androidactivityfragments.models.Game
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlin.time.Duration
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        setContent {
-            AndroidActivityFragmentsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
-            }
+        setContentView(R.layout.activity_main)
+
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        val gamesList = loadFromJson()
+        val adapter = GameAdapter(gamesList, this) { selectedItem ->
+            openFragment(selectedItem)
         }
+        recyclerView.adapter = adapter
     }
-}
 
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
+    private fun loadFromJson(): List<Game> {
+        val json: String
+        val inputStream = resources.openRawResource(R.raw.games)
+        json = inputStream.bufferedReader().use { it.readText() }
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AndroidActivityFragmentsTheme {
-        Greeting("Android")
+        val gson = Gson()
+        val gamesListType = object : TypeToken<List<Game>>() {}.type
+        return gson.fromJson(json, gamesListType)
+    }
+
+    private fun openFragment(game: Game) {
+        val fragment = GameDetailsFragment()
+        val bundle = Bundle()
+        bundle.putString("TITLE", game.title)
+        bundle.putInt("YEAR", game.releaseYear)
+        bundle.putInt("RATING", game.rating)
+        bundle.putString("POSTER", game.posterUrl)
+        bundle.putString("DESCR", game.description)
+        fragment.arguments = bundle
+
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.fragment_container, fragment)
+            .addToBackStack(null)
+            .commit()
     }
 }
